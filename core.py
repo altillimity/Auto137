@@ -2,6 +2,7 @@ from satellite_tle import fetch_tle
 from orbit_predictor.sources import get_predictor_from_tle_lines
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
+import config
 
 # Main scheduler
 scheduler = BackgroundScheduler()
@@ -31,11 +32,10 @@ class Satellite:
 
 # Update TLE
 def updateTLEs():
-    print('\n')
-
     for satellite in config.satellites:
         print("Fetching TLE for " + satellite.name)
         satellite.fetchTLE()
         print("  " + satellite.tle_1)
         print("  " + satellite.tle_2)
         print()
+    print()
