@@ -1,0 +1,35 @@
+satellites:
+  - sat:
+    name: NOAA 15
+    norad: 25338
+    priority: 0
+    min_elevation: 10
+    frequency: 137.620
+    downlink: APT
+  - sat:
+    name: NOAA 18
+    norad: 28654
+    priority: 0
+    min_elevation: 10
+    frequency: 137.100
+    downlink: APT
+  - sat:
+    name: NOAA 19
+    norad: 33591
+    priority: 0
+    min_elevation: 10
+    frequency: 137.100
+    downlink: APT
+  - sat:
+    name: METEOR-M 2 
+    norad: 40069
+    priority: 1
+    min_elevation: 20
+    frequency: 137.100
+    downlink: LRPT
+config:
+  tle_update_interval: 1
+  station:
+    latitude: 0.0
+    longitude: 0.0
+    elevation: 0
