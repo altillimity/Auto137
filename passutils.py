@@ -63,7 +63,7 @@ def decodeAPT(filename):
 # Decode LRPT file
 def decodeLRPT(filename):
     print("Demodulating '" + filename + "'...")
-    command = "meteor_demond -s 140000 '" + filename + ".raw' -o '" + filename + ".lrpt'"
+    command = "meteor_demod -s 140000 '" + filename + ".raw' -o '" + filename + ".lrpt'"
     if subprocess.Popen([command], shell=1).wait() == 0:
         os.remove(filename + ".raw")
     print("Decoding '" + filename + "'...")
