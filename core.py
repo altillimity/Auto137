@@ -3,9 +3,16 @@ from orbit_predictor.sources import get_predictor_from_tle_lines
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 import config
+from threading import Lock
 
 # Main scheduler
 scheduler = BackgroundScheduler()
+
+# Decoding queue
+decoding_queue = list()
+
+# Radio mutex
+radio_lock = Lock()
 
 # Init scheduler
 def initScheduler():
@@ -27,8 +34,14 @@ class Satellite:
         self.tle_1 = line1
         self.tle_2 = line2
     def getPredictor(self):
-        self.predictor = get_predictor_from_tle_lines((tle_1, tle_2))
+        self.predictor = get_predictor_from_tle_lines((self.tle_1, self.tle_2))
         return self.predictor
+
+# Recording class
+class Recording:
+    def __init__(self, satellite, filename):
+        self.satellite = satellite
+        self.filename = filename
 
 # Update TLE
 def updateTLEs():

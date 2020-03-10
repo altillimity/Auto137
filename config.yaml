@@ -11,7 +11,7 @@ satellites:
     norad: 28654
     priority: 0
     min_elevation: 10
-    frequency: 137.100
+    frequency: 137.9125
     downlink: APT
   - sat:
     name: NOAA 19
