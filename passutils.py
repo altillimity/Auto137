@@ -77,6 +77,8 @@ def decodeLRPT(filename):
 def decodePass(filename, satellite):
     if satellite.downlink == "APT":
         decodeAPT(filename)
+    if satellite.downlink == "LRPT":
+        decodeLRPT(filename)
 
 # Process pending decodings
 def processDecodeQueue():
