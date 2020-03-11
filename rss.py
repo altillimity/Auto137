@@ -46,7 +46,7 @@ def addRSSPass(satellite, filename, date):
     # Write the file to push the update
     rss.write_xml(open(config.output_dir + "/rss.xml", "w"))
 
-# Used for the starup procedure
+# Used for the startup procedure
 def startServer():
     global rss, httpd, server_thread
 
