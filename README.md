@@ -32,9 +32,11 @@ All decoded data is saved into the program's directory, but an output directory 
 This procedure should work on any debian-based system (including Raspbian). If using anything else replace apt with your distro's package manager (eg. dnf, yum, pacman, opkg).
 
 Start by installing all required packages through your package manager, including pip for other dependencies.
+
 `sudo apt install ffmpeg rtl-sdr python3-pip python3-numpy`
 
 Then install all python libraries.
+
 `sudo pip3 install satellitetle orbit_predictor apscheduler pyyaml`
 
-Now clone this git repo, edit the config file to your likings and start main.py using `python3 main.py`
+Now clone this git repo, edit the config file to your likings and start main.py using `python3 main.py`. If you experience an exception concerning `config = yaml.load(f, Loader=yaml.FullLoader)`, change it into `config = yaml.load(f)`.
