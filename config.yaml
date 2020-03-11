@@ -29,6 +29,7 @@ satellites:
     downlink: LRPT
 config:
   tle_update_interval: 1
+  output_dir: "../DATA"
   station:
     latitude: 0.0
     longitude: 0.0

@@ -2,6 +2,7 @@ import config
 import core
 import time
 import passutils
+import os
 from datetime import datetime, timedelta
 from threading import Thread
 
@@ -13,6 +14,10 @@ print('\n')
 # Parse config, fetch some data
 config.loadConfig("config.yaml")
 core.updateTLEs()
+
+# Create images folders
+for satellite in config.satellites:
+  os.makedirs(config.output_dir + "/" + satellite.name)
 
 # Init sheduler and start repeating tasks
 core.initScheduler()

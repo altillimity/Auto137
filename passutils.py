@@ -60,7 +60,7 @@ def recordAPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
 
     # Build filename
-    filename = satellite.name + " at " + str(datetime.utcnow())
+    filename = config.output_dir + "/" + satellite.name + "/" + satellite.name + " at " + str(datetime.utcnow())
     print("Saving as '" + filename + "'")
 
     # Build command. We receive with rtl_fm and output a .wav with ffmpeg
@@ -85,7 +85,7 @@ def recordLRPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
 
     # Build filename
-    filename = satellite.name + " at " + str(datetime.utcnow())
+    filename = config.output_dir + "/" + satellite.name + "/" + satellite.name + " at " + str(datetime.utcnow())
     print("Saving as '" + filename + "'")
 
     # Build command. We receive with rtl_fm and output a raw output to feed into the demodulator

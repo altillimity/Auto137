@@ -7,9 +7,10 @@ from orbit_predictor.locations import Location
 satellites = list()
 tle_update_interval = int()
 location = 0
+output_dir = str()
 
 def loadConfig(file):
-    global satellites, tle_update_interval, location
+    global satellites, tle_update_interval, location, output_dir
     # Open our file
     f = io.open(file, mode="r", encoding="utf-8")
 
@@ -18,6 +19,7 @@ def loadConfig(file):
 
     # Software options
     tle_update_interval = int(config["config"]["tle_update_interval"])
+    output_dir = str(config["config"]["output_dir"])
 
     print("TLE Update interval : " + str(tle_update_interval) + " hour(s)")
     print('\n')
