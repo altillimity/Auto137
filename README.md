@@ -1,6 +1,6 @@
 # Auto137
 
-There already is quite a bunch of programs doing the same, that is managing an automatic satellite receiving / decoding station aimed at NOAA / METEOR, but none worked the way I wanted it to... So was born Auto137, a python-based autonomous APT / LRPT / etc station made to easily support more options and be cleaner (only 1 language).
+There already is quite a bunch of programs fullfilling the same function, that is managing an automatic satellite receiving / decoding station aimed at NOAA / METEOR, but none worked the way I wanted it to... So was born Auto137, a python-based autonomous APT / LRPT / etc station made to easily support more options and be cleaner (only 1 language).
 
 ### What it does
 
