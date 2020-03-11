@@ -152,6 +152,13 @@ def decodeLRPT(filename):
     if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
         os.remove(filename + ".lrpt")
     
+    # Convert to png to save on space
+    command1 = "ffmpeg -i '" + filename + " - Visible.bmp' '" + filename + " - Visible.png' "
+    command2 = "ffmpeg -i '" + filename + " - Infrared.bmp' '" + filename + " - Infrared.png' "
+    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
+        os.remove(filename + " - Visible.bmp")
+        os.remove(filename + " - Infrared.bmp")
+
     print("Done decoding'" + filename + "'!")
 
 # Redirect to the right decoder function

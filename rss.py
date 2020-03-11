@@ -32,7 +32,7 @@ def addRSSPass(satellite, filename, date):
     if satellite.downlink == "APT":
         image = "Visible + Infrared : <\p>" + "<img src=\"" + filename + ".png\">"
     elif satellite.downlink == "LRPT":
-        image = "Visible : <\p>" + "<img src=\"" + filename + " - Visible.bmp\">" + "<\p>" + "Infrared : <\p>" + "<img src=\"" + filename + " - Infrared.bmp\">"
+        image = "Visible : <\p>" + "<img src=\"" + filename + " - Visible.png\">" + "<\p>" + "Infrared : <\p>" + "<img src=\"" + filename + " - Infrared.png\">"
 
     # Add it to the feed
     rss.items.append(PyRSS2Gen.RSSItem(
