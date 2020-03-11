@@ -58,18 +58,24 @@ def updatePass():
 def recordAPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
 
+    # Build filename
     filename = satellite.name + " at " + str(datetime.utcnow())
     print("Saving as '" + filename + "'")
 
+    # Build command. We receive with rtl_fm and output a .wav with ffmpeg
     command = "rtl_fm -f " + str(satellite.frequency) + "M -M mbfm -s 60000 -r 48000 - | ffmpeg -f s16le -channels 1 -sample_rate 48k -i pipe:0 -f wav '" + filename + ".wav'"
     subprocess.Popen([command], shell=1)
 
+    # Wait until pass is over
     while end_time >= datetime.utcnow():
         time.sleep(1)
     
+    # End our command
     subprocess.Popen("killall rtl_fm".split(" "))
 
     print("LOS " + satellite.name + "...")
+
+    # Give it some time to exit and queue the decoding
     time.sleep(10)
     core.decoding_queue.append(Recording(satellite, filename))
 
@@ -77,49 +83,71 @@ def recordAPT(satellite, end_time):
 def recordLRPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
 
+    # Build filename
     filename = satellite.name + " at " + str(datetime.utcnow())
     print("Saving as '" + filename + "'")
 
+    # Build command. We receive with rtl_fm and output a raw output to feed into the demodulator
     command = "rtl_fm -M raw -s 140000 -f " + str(satellite.frequency) + "M -E dc '" + filename + ".raw'"
     subprocess.Popen([command], shell=1)
 
+    # Wait until pass is over
     while end_time >= datetime.utcnow():
         time.sleep(1)
     
+    # End our command
     subprocess.Popen("killall rtl_fm".split(" "))
 
     print("LOS " + satellite.name + "...")
+
+    # Give it some time to exit and queue the decoding
     time.sleep(10)
     core.decoding_queue.append(Recording(satellite, filename))
 
 # Downlink mode redirection
 def recordPass(satellite, end_time):
+    # Lock the radio to prevent any issues
     core.radio_lock.acquire()
+
+    # Record the pass!
     if satellite.downlink == "APT":
         recordAPT(satellite, end_time)
     elif satellite.downlink == "LRPT":
         recordLRPT(satellite, end_time)
+
+    # Release the radio
     core.radio_lock.release()
 
 # Decode APT file
 def decodeAPT(filename):
     print("Decoding '" + filename + "'...")
+
+    # Build noaa-apt command
     command = "noaa-apt '" + filename + ".wav' -o '" + filename + ".png'"
+
+    # Run and delete the recording to save disk space
     if subprocess.Popen([command], shell=1).wait() == 0:
         os.remove(filename + ".wav")
+    
     print("Done decoding'" + filename + "'!")
 
 # Decode LRPT file
 def decodeLRPT(filename):
     print("Demodulating '" + filename + "'...")
+
+    # Demodulate with meteor_demod
     command = "meteor_demod -B -s 140000 '" + filename + ".raw' -o '" + filename + ".lrpt'"
     if subprocess.Popen([command], shell=1).wait() == 0:
         os.remove(filename + ".raw")
+    
     print("Decoding '" + filename + "'...")
+
+    # Decode with meteor_decoder. Both IR & Visible
     command1 = "medet '" + filename + ".lrpt' '" + filename + " - Visible' -r 65 -g 65 -b 64"
     command2 = "medet '" + filename + ".lrpt' '" + filename + " - Infrared' -r 68 -g 68 -b 68"
     if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
         os.remove(filename + ".lrpt")
+    
     print("Done decoding'" + filename + "'!")
 
 # Redirect to the right decoder function
