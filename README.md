@@ -13,7 +13,7 @@ This program, along with the necessary external tools and libraries, can do all 
 *  Easy support for other protocols
 *  Multi-Threaded, decoding does not impact reception
 
-All decoded data is saved into the program's directory, but an output directory will be configurable.
+All decoded data is saved into the chosen directory and an optional RSS feed can be enabled (no history saving to save on size).
 
 ### Requirements
 
@@ -26,6 +26,7 @@ All decoded data is saved into the program's directory, but an output directory 
 * [orbit-predictor](https://github.com/satellogic/orbit-predictor) (Pass prediction)
 * [pyyaml](https://github.com/yaml/pyyaml) (YAML config file)
 * [apscheduler](https://github.com/agronholm/apscheduler) (Task scheduling)
+* [PyRSS2Gen](http://dalkescientific.com/Python/PyRSS2Gen.html) (Rss feed generation)
 
 ### Installation
 

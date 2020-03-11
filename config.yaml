@@ -34,3 +34,6 @@ config:
     latitude: 0.0
     longitude: 0.0
     elevation: 0
+  rss:
+    enabled: false
+    port: 8080

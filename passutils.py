@@ -3,6 +3,7 @@ import os
 import time
 import core
 import config
+import rss
 from datetime import datetime, timedelta
 from core import Recording
 
@@ -58,6 +59,7 @@ def updatePass():
 # APT Pass record function
 def recordAPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
+    date = datetime.utcnow()
 
     # Build filename
     filename = config.output_dir + "/" + satellite.name + "/" + satellite.name + " at " + str(datetime.utcnow())
@@ -78,11 +80,12 @@ def recordAPT(satellite, end_time):
 
     # Give it some time to exit and queue the decoding
     time.sleep(10)
-    core.decoding_queue.append(Recording(satellite, filename))
+    core.decoding_queue.append(Recording(satellite, filename, date))
 
 # LRPT Pass record function
 def recordLRPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
+    date = datetime.utcnow()
 
     # Build filename
     filename = config.output_dir + "/" + satellite.name + "/" + satellite.name + " at " + str(datetime.utcnow())
@@ -103,7 +106,7 @@ def recordLRPT(satellite, end_time):
 
     # Give it some time to exit and queue the decoding
     time.sleep(10)
-    core.decoding_queue.append(Recording(satellite, filename))
+    core.decoding_queue.append(Recording(satellite, filename, date))
 
 # Downlink mode redirection
 def recordPass(satellite, end_time):
@@ -152,11 +155,15 @@ def decodeLRPT(filename):
     print("Done decoding'" + filename + "'!")
 
 # Redirect to the right decoder function
-def decodePass(filename, satellite):
+def decodePass(filename, satellite, date):
     if satellite.downlink == "APT":
         decodeAPT(filename)
     if satellite.downlink == "LRPT":
         decodeLRPT(filename)
+
+    # Add on the RSS feed if enabled
+    if config.rss_enabled:
+        rss.addRSSPass(satellite, filename.replace(config.output_dir + "/"), date)
 
 # Process pending decodings
 def processDecodeQueue():
@@ -164,5 +171,5 @@ def processDecodeQueue():
         time.sleep(1)
         if len(core.decoding_queue) > 0:
             decode = core.decoding_queue[0]
-            decodePass(decode.filename, decode.satellite)
+            decodePass(decode.filename, decode.satellite, decode.date)
             core.decoding_queue.remove(decode)
