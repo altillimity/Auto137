@@ -5,6 +5,55 @@ import core
 from datetime import datetime, timedelta
 from core import Recording
 
+# Schedule a pass job
+def schedulePass(pass_to_add, satellite):
+    core.scheduler.add_job(passutils.recordPass, 'date', [satellite, pass_to_add.los], run_date=pass_to_add.aos)
+    print("Scheduled " + satellite.name + " pass at " + str(pass_to_add.aos))
+
+# Schedule passes and resolve conflicts
+def updatePass():
+    passes = list()
+    timenow = datetime.utcnow()
+
+    # Lookup next passes of all satellites
+    for satellite in config.satellites:
+        predictor = satellite.getPredictor()
+        next_pass = predictor.get_next_pass(config.location, max_elevation_gt=satellite.min_elevation)
+        max_elevation = next_pass.max_elevation_deg
+        priority = satellite.priority
+
+        # Filter those coming in the next hour
+        if next_pass.aos < timenow + timedelta(hours=1):
+            passes.append([next_pass, satellite, max_elevation, priority])
+
+    # Solve conflicts, a conflict being 2 satellites over horizon at the same time
+    for current_pass in passes:
+        current_pass_obj = current_pass[0]
+        current_sat_obj = current_pass[1]
+        current_max_ele = current_pass[2]
+        current_priority = current_pass[3]
+
+        keep = True
+        for next_pass, satellite, max_elevation, priority in passes:
+            # Skip if this is the same
+            if next_pass == current_pass_obj:
+                continue
+
+            # Test if those 2 conflicts
+            if next_pass.aos <= current_pass_obj.los:
+                # If the priority is the same, chose the best pass
+                if current_priority == priority:
+                    if current_max_ele < max_elevation:
+                        keep = False
+                else:
+                    # Always prefer higher priorities
+                    if current_priority < priority:
+                        keep = False
+
+        # Schedule the task
+        if keep:
+            schedulePass(current_pass_obj, current_sat_obj)
+
 # APT Pass record function
 def recordAPT(satellite, end_time):
     print("AOS " + satellite.name + "...")
@@ -70,7 +119,7 @@ def decodeLRPT(filename):
     command1 = "medet '" + filename + ".lrpt' '" + filename + " - Visible' -r 65 -g 65 -b 64"
     command2 = "medet '" + filename + ".lrpt' '" + filename + " - Infrared' -r 68 -g 68 -b 68"
     if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
-        os.remove(filename + ".raw")
+        os.remove(filename + ".lrpt")
     print("Done decoding'" + filename + "'!")
 
 # Redirect to the right decoder function
