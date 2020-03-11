@@ -38,6 +38,6 @@ Start by installing all required packages through your package manager, includin
 
 Then install all python libraries.
 
-`sudo pip3 install satellitetle orbit_predictor apscheduler pyyaml`
+`sudo pip3 install satellitetle orbit_predictor apscheduler pyyaml PyRSS2Gen`
 
 Now clone this git repo, edit the config file to your likings and start main.py using `python3 main.py`. If you experience an exception concerning `config = yaml.load(f, Loader=yaml.FullLoader)`, change it into `config = yaml.load(f)`.
