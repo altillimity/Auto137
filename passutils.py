@@ -2,12 +2,13 @@ import subprocess
 import os
 import time
 import core
+import config
 from datetime import datetime, timedelta
 from core import Recording
 
 # Schedule a pass job
 def schedulePass(pass_to_add, satellite):
-    core.scheduler.add_job(passutils.recordPass, 'date', [satellite, pass_to_add.los], run_date=pass_to_add.aos)
+    core.scheduler.add_job(recordPass, 'date', [satellite, pass_to_add.los], run_date=pass_to_add.aos)
     print("Scheduled " + satellite.name + " pass at " + str(pass_to_add.aos))
 
 # Schedule passes and resolve conflicts
