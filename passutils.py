@@ -163,7 +163,7 @@ def decodePass(filename, satellite, date):
 
     # Add on the RSS feed if enabled
     if config.rss_enabled:
-        rss.addRSSPass(satellite, filename.replace(config.output_dir + "/"), date)
+        rss.addRSSPass(satellite, filename.replace(config.output_dir + "/", ""), date)
 
 # Process pending decodings
 def processDecodeQueue():
