@@ -34,10 +34,16 @@ This procedure should work on any debian-based system (including Raspbian). If u
 
 Start by installing all required packages through your package manager, including pip for other dependencies.
 
-`sudo apt install ffmpeg rtl-sdr python3-pip python3-numpy`
+`sudo apt install ffmpeg rtl-sdr python3-pip python3-numpy pfc build-essential`
 
 Then install all python libraries.
 
 `sudo pip3 install satellitetle orbit_predictor apscheduler pyyaml PyRSS2Gen`
+
+Now you need to install noaa-apt (download [here](https://noaa-apt.mbernardi.com.ar/download.html)), and compile meteor_demod and meteor_decoder :
+
+`git clone https://github.com/artlav/meteor_decoder.git && cd meteor_decoder && sh ./build_medet.sh && sudo cp medet /usr/bin`
+`git clone https://github.com/dbdexter-dev/meteor_demod.git && cd meteor_demod && make && sudo make install`
+
 
 Now clone this git repo, edit the config file to your likings and start main.py using `python3 main.py`. If you experience an exception concerning `config = yaml.load(f, Loader=yaml.FullLoader)`, change it into `config = yaml.load(f)`.
