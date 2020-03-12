@@ -1,3 +1,4 @@
+# Define your satellites here! Options names should be self-explanatory
 satellites:
   - sat:
     name: NOAA 15
@@ -32,13 +33,24 @@ satellites:
     downlink: LRPT
     delete_processed_files: true
 config:
+  # How often should TLE data be updated?
   tle_update_interval: 1
+  # Where will images and temporary files be stored
   output_dir: "../DATA"
+  # Your location
   station:
     latitude: 0.0
     longitude: 0.0
     elevation: 0
+  # Optional RSS feed. Using a webserver such as NGINX or Apache2 is recommended
   rss:
     enabled: true
     webserver: false
     port: 8080
+  # Run a command once files (images or raw) or done being processed
+  post_processing_hook:
+    # You can set any command here. {file} will be replace by the path to the file in the following format '/path/to/file'
+    command: "scp {file} user@remoteserver:/sample"
+    enabled: false
+    # If enabled the command will be ran once for each output file. If set to false {file} will instead be replaced by a series of paths, eg. '/path/to/file1' '/path/to/file2'
+    run_foreach: true

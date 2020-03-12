@@ -124,6 +124,7 @@ def recordPass(satellite, end_time):
 
 # Decode APT file
 def decodeAPT(filename, delete_processed_files):
+    output_files = list()
     print("Decoding '" + filename + "'...")
 
     # Build noaa-apt command
@@ -133,10 +134,16 @@ def decodeAPT(filename, delete_processed_files):
     if subprocess.Popen([command], shell=1).wait() == 0 and delete_processed_files:
         os.remove(filename + ".wav")
     
+    # Return a list of produced outputs
+    output_files.append(filename + ".png")
+
     print("Done decoding'" + filename + "'!")
+
+    return output_files
 
 # Decode LRPT file
 def decodeLRPT(filename, delete_processed_files):
+    output_files = list()
     print("Demodulating '" + filename + "'...")
 
     # Demodulate with meteor_demod
@@ -159,18 +166,40 @@ def decodeLRPT(filename, delete_processed_files):
         os.remove(filename + " - Visible.bmp")
         os.remove(filename + " - Infrared.bmp")
 
+    # Return a list of produced outputs
+    output_files.append(filename + " - Visible.bmp")
+    output_files.append(filename + " - Infrared.bmp")
+
     print("Done decoding'" + filename + "'!")
+
+    return output_files
 
 # Redirect to the right decoder function
 def decodePass(filename, satellite, date):
+    output_files = list()
     if satellite.downlink == "APT":
-        decodeAPT(filename, satellite.delete_processed_files)
-    if satellite.downlink == "LRPT":
-        decodeLRPT(filename, satellite.delete_processed_files)
+        output_files = decodeAPT(filename, satellite.delete_processed_files)
+    elif satellite.downlink == "LRPT":
+        output_files = decodeLRPT(filename, satellite.delete_processed_files)
+    else:
+        return
 
     # Add on the RSS feed if enabled
     if config.rss_enabled:
         rss.addRSSPass(satellite, filename.replace(config.output_dir + "/", ""), date)
+
+    # Process post-processing hook if enabled
+    if config.post_processing_hook_enabled:
+        if config.post_processing_hook_foreach:
+            for file_out in output_files:
+                command = config.post_processing_hook_command.replace("{file}", "'" + file_out + "'")
+                subprocess.Popen([command], shell=1).wait()
+        else:
+            file_list = str()
+            for file_out in output_files:
+                file_list += "'" + file_out + "' "
+            command = config.post_processing_hook_command.replace("{file}", file_list)
+            subprocess.Popen([command], shell=1).wait()
 
 # Process pending decodings
 def processDecodeQueue():
