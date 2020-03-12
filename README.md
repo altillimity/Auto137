@@ -43,6 +43,7 @@ Then install all python libraries.
 Now you need to install noaa-apt (download [here](https://noaa-apt.mbernardi.com.ar/download.html)), and compile meteor_demod and meteor_decoder :
 
 `git clone https://github.com/artlav/meteor_decoder.git && cd meteor_decoder && sh ./build_medet.sh && sudo cp medet /usr/bin`
+
 `git clone https://github.com/dbdexter-dev/meteor_demod.git && cd meteor_demod && make && sudo make install`
 
 
