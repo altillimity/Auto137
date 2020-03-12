@@ -50,14 +50,15 @@ def addRSSPass(satellite, filename, date):
 def startServer():
     global rss, httpd, server_thread
 
-    # Configure the http server
-    httpd = socketserver.TCPServer(("", config.rss_port), HTTPHandler)
-    print("Starting http server at " + str(config.rss_port))
-    print("\n")
+    if config.rss_webserver:
+        # Configure the http server
+        httpd = socketserver.TCPServer(("", config.rss_port), HTTPHandler)
+        print("Starting http server at " + str(config.rss_port))
+        print("\n")
 
-    # Start it in a thread
-    server_thread = Thread(target = httpd.serve_forever)
-    server_thread.start()
+        # Start it in a thread
+        server_thread = Thread(target = httpd.serve_forever)
+        server_thread.start()
 
     # Write the file to make the feed readable
     rss.write_xml(open(config.output_dir + "/rss.xml", "w"))

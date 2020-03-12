@@ -10,9 +10,10 @@ location = 0
 output_dir = str()
 rss_enabled = bool()
 rss_port = int()
+rss_webserver = bool()
 
 def loadConfig(file):
-    global satellites, tle_update_interval, location, output_dir, rss_enabled, rss_port
+    global satellites, tle_update_interval, location, output_dir, rss_enabled, rss_port, rss_webserver
     # Open our file
     f = io.open(file, mode="r", encoding="utf-8")
 
@@ -23,6 +24,7 @@ def loadConfig(file):
     tle_update_interval = int(config["config"]["tle_update_interval"])
     output_dir = str(config["config"]["output_dir"])
     rss_enabled = bool(config["config"]["rss"]["enabled"])
+    rss_webserver = bool(config["config"]["rss"]["webserver"])
     rss_port = int(config["config"]["rss"]["port"])
 
     print("TLE Update interval : " + str(tle_update_interval) + " hour(s)")
@@ -57,3 +59,4 @@ def loadConfig(file):
         satellites.append(satellite)
     
     print('\n')
+    

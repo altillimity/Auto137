@@ -180,3 +180,4 @@ def processDecodeQueue():
             decode = core.decoding_queue[0]
             decodePass(decode.filename, decode.satellite, decode.date)
             core.decoding_queue.remove(decode)
+            
