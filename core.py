@@ -21,13 +21,14 @@ def initScheduler():
 
 # Satellite class
 class Satellite:
-    def __init__(self, name, norad, priority, min_elevation, frequency, downlink):
+    def __init__(self, name, norad, priority, min_elevation, frequency, downlink, delete_processed_files):
         self.name = name
         self.norad = norad
         self.priority = priority
         self.min_elevation = min_elevation
         self.frequency = frequency
         self.downlink = downlink
+        self.delete_processed_files = delete_processed_files
     def fetchTLE(self):
         tle = fetch_tle.fetch_tle_from_celestrak(self.norad)
         name, line1, line2 = tle

@@ -6,6 +6,7 @@ satellites:
     min_elevation: 10
     frequency: 137.620
     downlink: APT
+    delete_processed_files: true
   - sat:
     name: NOAA 18
     norad: 28654
@@ -13,6 +14,7 @@ satellites:
     min_elevation: 10
     frequency: 137.9125
     downlink: APT
+    delete_processed_files: true
   - sat:
     name: NOAA 19
     norad: 33591
@@ -20,6 +22,7 @@ satellites:
     min_elevation: 10
     frequency: 137.100
     downlink: APT
+    delete_processed_files: true
   - sat:
     name: METEOR-M 2 
     norad: 40069
@@ -27,6 +30,7 @@ satellites:
     min_elevation: 20
     frequency: 137.100
     downlink: LRPT
+    delete_processed_files: true
 config:
   tle_update_interval: 1
   output_dir: "../DATA"

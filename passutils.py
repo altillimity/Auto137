@@ -123,25 +123,25 @@ def recordPass(satellite, end_time):
     core.radio_lock.release()
 
 # Decode APT file
-def decodeAPT(filename):
+def decodeAPT(filename, delete_processed_files):
     print("Decoding '" + filename + "'...")
 
     # Build noaa-apt command
     command = "noaa-apt '" + filename + ".wav' -o '" + filename + ".png'"
 
     # Run and delete the recording to save disk space
-    if subprocess.Popen([command], shell=1).wait() == 0:
+    if subprocess.Popen([command], shell=1).wait() == 0 and delete_processed_files:
         os.remove(filename + ".wav")
     
     print("Done decoding'" + filename + "'!")
 
 # Decode LRPT file
-def decodeLRPT(filename):
+def decodeLRPT(filename, delete_processed_files):
     print("Demodulating '" + filename + "'...")
 
     # Demodulate with meteor_demod
     command = "meteor_demod -B -s 140000 '" + filename + ".raw' -o '" + filename + ".lrpt'"
-    if subprocess.Popen([command], shell=1).wait() == 0:
+    if subprocess.Popen([command], shell=1).wait() == 0 and delete_processed_files:
         os.remove(filename + ".raw")
     
     print("Decoding '" + filename + "'...")
@@ -149,13 +149,13 @@ def decodeLRPT(filename):
     # Decode with meteor_decoder. Both IR & Visible
     command1 = "medet '" + filename + ".lrpt' '" + filename + " - Visible' -r 65 -g 65 -b 64"
     command2 = "medet '" + filename + ".lrpt' '" + filename + " - Infrared' -r 68 -g 68 -b 68"
-    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
+    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0 and delete_processed_files:
         os.remove(filename + ".lrpt")
     
     # Convert to png to save on space
     command1 = "ffmpeg -i '" + filename + " - Visible.bmp' '" + filename + " - Visible.png' "
     command2 = "ffmpeg -i '" + filename + " - Infrared.bmp' '" + filename + " - Infrared.png' "
-    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0:
+    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0 and delete_processed_files:
         os.remove(filename + " - Visible.bmp")
         os.remove(filename + " - Infrared.bmp")
 
@@ -164,9 +164,9 @@ def decodeLRPT(filename):
 # Redirect to the right decoder function
 def decodePass(filename, satellite, date):
     if satellite.downlink == "APT":
-        decodeAPT(filename)
+        decodeAPT(filename, satellite.delete_processed_files)
     if satellite.downlink == "LRPT":
-        decodeLRPT(filename)
+        decodeLRPT(filename, satellite.delete_processed_files)
 
     # Add on the RSS feed if enabled
     if config.rss_enabled:
