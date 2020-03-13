@@ -156,7 +156,8 @@ def decodeLRPT(filename, delete_processed_files):
     # Decode with meteor_decoder. Both IR & Visible
     command1 = "medet '" + filename + ".lrpt' '" + filename + " - Visible' -r 65 -g 65 -b 64"
     command2 = "medet '" + filename + ".lrpt' '" + filename + " - Infrared' -r 68 -g 68 -b 68"
-    if subprocess.Popen([command1], shell=1).wait() == 0 and subprocess.Popen([command2], shell=1).wait() == 0 and delete_processed_files:
+    process2 = subprocess.Popen([command2], shell=1)
+    if subprocess.Popen([command1], shell=1).wait() == 0 and process2.wait() == 0 and delete_processed_files:
         os.remove(filename + ".lrpt")
     
     # Convert to png to save on space
