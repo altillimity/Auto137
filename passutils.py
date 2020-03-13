@@ -4,6 +4,7 @@ import time
 import core
 import config
 import rss
+import discord
 from datetime import datetime, timedelta
 from core import Recording
 
@@ -228,6 +229,9 @@ def decodePass(filename, satellite, date):
                 file_list += "'" + file_out + "' "
             command = config.post_processing_hook_command.replace("{file}", file_list)
             subprocess.Popen([command], shell=1).wait()
+
+    # Post to discord
+    discord.post_to_webhook(satellite, output_files, date)
 
 # Process pending decodings
 def processDecodeQueue():
