@@ -28,7 +28,7 @@ def updatePass():
     # Lookup next passes of all satellites
     for satellite in config.satellites:
         predictor = satellite.getPredictor()
-        next_pass = predictor.get_next_pass(config.location, max_elevation_gt=0)
+        next_pass = predictor.get_next_pass(config.location, max_elevation_gt=satellite.min_elevation)
         max_elevation = next_pass.max_elevation_deg
         priority = satellite.priority
 
