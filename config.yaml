@@ -54,3 +54,5 @@ config:
     enabled: false
     # If enabled the command will be ran once for each output file. If set to false {file} will instead be replaced by a series of paths, eg. '/path/to/file1' '/path/to/file2'
     run_foreach: true
+  # Maximum overlap in minutes before a pass is entirely ignored
+  max_overlap: 7

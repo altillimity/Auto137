@@ -28,7 +28,7 @@ def updatePass():
     # Lookup next passes of all satellites
     for satellite in config.satellites:
         predictor = satellite.getPredictor()
-        next_pass = predictor.get_next_pass(config.location, max_elevation_gt=satellite.min_elevation)
+        next_pass = predictor.get_next_pass(config.location, max_elevation_gt=0)
         max_elevation = next_pass.max_elevation_deg
         priority = satellite.priority
 
@@ -44,6 +44,9 @@ def updatePass():
         current_priority = current_pass[3]
 
         keep = True
+        keep_modified = False
+        custom_aos = 0
+        custom_los = 0
         for next_pass, satellite, max_elevation, priority in passes:
             # Skip if this is the same
             if next_pass == current_pass_obj:
@@ -51,19 +54,34 @@ def updatePass():
 
             # Test if those 2 conflicts
             if next_pass.aos <= current_pass_obj.los and not next_pass.los <= current_pass_obj.aos:
-                print ("OVERLAP " + current_sat_obj.name + " / " + satellite.name)
                 # If the priority is the same, chose the best pass
                 if current_priority == priority:
                     if current_max_ele < max_elevation:
                         keep = False
+
+                        # Schedule the pass if it doesn't overlap too much
+                        overlapping_time = current_pass_obj.los - next_pass.aos
+                        if overlapping_time < timedelta(minutes=config.maximum_overlap):
+                            keep_modified = True
+                            custom_aos = current_pass_obj.aos
+                            custom_los = next_pass.aos
                 else:
                     # Always prefer higher priorities
                     if current_priority < priority:
                         keep = False
 
+                        # Schedule the pass if it doesn't overlap too much
+                        overlapping_time = current_pass_obj.los - next_pass.aos
+                        if overlapping_time < timedelta(minutes=config.maximum_overlap):
+                            keep_modified = True
+                            custom_aos = current_pass_obj.aos
+                            custom_los = next_pass.aos
+
         # Schedule the task
         if keep:
             schedulePass(current_pass_obj, current_sat_obj)
+        elif keep_modified:
+            schedulePass(current_pass_obj, current_sat_obj, custom_aos=custom_aos, custom_los=custom_los)
 
 # APT Pass record function
 def recordAPT(satellite, end_time):

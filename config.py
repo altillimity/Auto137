@@ -8,6 +8,7 @@ satellites = list()
 tle_update_interval = int()
 location = 0
 output_dir = str()
+maximum_overlap = 0
 
 # RSS config
 rss_enabled = bool()
@@ -20,7 +21,7 @@ post_processing_hook_enabled = bool()
 post_processing_hook_foreach = bool()
 
 def loadConfig(file):
-    global satellites, tle_update_interval, location, output_dir, rss_enabled, rss_port, rss_webserver, post_processing_hook_command, post_processing_hook_enabled, post_processing_hook_foreach
+    global satellites, tle_update_interval, location, output_dir, rss_enabled, rss_port, rss_webserver, post_processing_hook_command, post_processing_hook_enabled, post_processing_hook_foreach, maximum_overlap
     # Open our file
     f = io.open(file, mode="r", encoding="utf-8")
 
@@ -30,6 +31,7 @@ def loadConfig(file):
     # Software options
     tle_update_interval = int(config["config"]["tle_update_interval"])
     output_dir = str(config["config"]["output_dir"])
+    maximum_overlap = int(config["config"]["max_overlap"])
 
     # RSS
     rss_enabled = bool(config["config"]["rss"]["enabled"])
