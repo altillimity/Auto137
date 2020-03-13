@@ -33,7 +33,7 @@ def updatePass():
         priority = satellite.priority
 
         # Filter those coming in the next hour
-        if next_pass.aos < timenow + timedelta(hours=1) or True:
+        if next_pass.aos < timenow + timedelta(hours=1):
             passes.append([next_pass, satellite, max_elevation, priority])
 
     # Solve conflicts, a conflict being 2 satellites over horizon at the same time
