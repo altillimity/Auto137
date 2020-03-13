@@ -32,6 +32,14 @@ satellites:
     frequency: 137.100
     downlink: LRPT
     delete_processed_files: true
+  - sat:
+    name: METOP-B
+    norad: 38771
+    priority: 1
+    min_elevation: 20
+    frequency: 137.100
+    downlink: LRPT
+    delete_processed_files: true
 config:
   # How often should TLE data be updated?
   tle_update_interval: 1

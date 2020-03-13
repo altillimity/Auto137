@@ -8,9 +8,17 @@ from datetime import datetime, timedelta
 from core import Recording
 
 # Schedule a pass job
-def schedulePass(pass_to_add, satellite):
-    core.scheduler.add_job(recordPass, 'date', [satellite, pass_to_add.los], run_date=pass_to_add.aos)
-    print("Scheduled " + satellite.name + " pass at " + str(pass_to_add.aos))
+def schedulePass(pass_to_add, satellite, custom_aos = 0, custom_los = 0):
+
+    # Allow setting custom aos/los
+    if custom_aos == 0:
+        custom_aos = pass_to_add.aos
+    if custom_los == 0:
+        custom_los = pass_to_add.los
+
+    # Schedule the task
+    core.scheduler.add_job(recordPass, 'date', [satellite, custom_los], run_date=custom_aos)
+    print("Scheduled " + satellite.name + " pass at " + str(custom_aos))
 
 # Schedule passes and resolve conflicts
 def updatePass():
@@ -25,7 +33,7 @@ def updatePass():
         priority = satellite.priority
 
         # Filter those coming in the next hour
-        if next_pass.aos < timenow + timedelta(hours=1):
+        if next_pass.aos < timenow + timedelta(hours=1) or True:
             passes.append([next_pass, satellite, max_elevation, priority])
 
     # Solve conflicts, a conflict being 2 satellites over horizon at the same time
@@ -42,7 +50,7 @@ def updatePass():
                 continue
 
             # Test if those 2 conflicts
-            if next_pass.aos <= current_pass_obj.los:
+            if next_pass.aos <= current_pass_obj.los and not next_pass.los <= current_pass_obj.los:
                 # If the priority is the same, chose the best pass
                 if current_priority == priority:
                     if current_max_ele < max_elevation:
