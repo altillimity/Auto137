@@ -34,7 +34,7 @@ This procedure should work on any debian-based system (including Raspbian). If u
 
 Start by installing all required packages through your package manager, including pip for other dependencies.
 
-`sudo apt install ffmpeg rtl-sdr python3-pip python3-numpy pfc build-essential`
+`sudo apt install ffmpeg rtl-sdr python3-pip python3-numpy fpc build-essential`
 
 Then install all python libraries.
 
