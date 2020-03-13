@@ -50,7 +50,8 @@ def updatePass():
                 continue
 
             # Test if those 2 conflicts
-            if next_pass.aos <= current_pass_obj.los and not next_pass.los <= current_pass_obj.los:
+            if next_pass.aos <= current_pass_obj.los and not next_pass.los <= current_pass_obj.aos:
+                print ("OVERLAP " + current_sat_obj.name + " / " + satellite.name)
                 # If the priority is the same, chose the best pass
                 if current_priority == priority:
                     if current_max_ele < max_elevation:
