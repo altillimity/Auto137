@@ -72,7 +72,7 @@ def loadConfig(file):
         print("     Minimum elevation       : " + str(min_elevation))
         print("     Frequency               : " + str(frequency))
         print("     Downlink type           : " + downlink)
-        print("     Delete processed files  : " + downlink)
+        print("     Delete processed files  : " + str(delete_processed_files))
         satellite = Satellite(name, norad, priority, min_elevation, frequency, downlink, delete_processed_files)
         satellites.append(satellite)
     
