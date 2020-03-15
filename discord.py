@@ -24,8 +24,8 @@ def post_to_webhook(satellite, images, date):
 
     url = "url"
     if satellite.downlink == "APT":
-        payload = "{\"username\": \"Aang23 Station\", \"embeds\": [{ \"image\": {\"url\": \"" + images_url[0] + "\"}, \"author\": {\"name\":\"" + satellite.name + "\"}, \"title\": \"At " + date.strftime('%H:%-M %d, %b %Y') + "\" }]}"
+        payload = "{\"username\": \"Aang23 Station\", \"embeds\": [{ \"image\": {\"url\": \"" + images_url[0] + "\"}, \"author\": {\"name\":\"" + satellite.name + "\"}, \"title\": \"At " + date.strftime('%H:%M %d, %b %Y') + "\" }]}"
     elif satellite.downlink == "LRPT":
-        payload = "{\"username\": \"Aang23 Station\", \"embeds\": [{ \"image\": {\"url\": \"" + images_url[0] + "\"}, \"author\": {\"name\":\"" + satellite.name + " - Infrared\"}, \"title\": \"At " + date.strftime('%H:%-M %d, %b %Y') + "\" }, { \"image\": {\"url\": \"" + images_url[1] + "\"}, \"author\": {\"name\":\"" + satellite.name + " - Visible\"}, \"title\": \"At " + date.strftime('%H:%-M %d, %b %Y') + "\" }]}"
+        payload = "{\"username\": \"Aang23 Station\", \"embeds\": [{ \"image\": {\"url\": \"" + images_url[0] + "\"}, \"author\": {\"name\":\"" + satellite.name + " - Visible\"}, \"title\": \"At " + date.strftime('%H:%M %d, %b %Y') + "\" }, { \"image\": {\"url\": \"" + images_url[1] + "\"}, \"author\": {\"name\":\"" + satellite.name + " - Infrared\"}, \"title\": \"At " + date.strftime('%H:%M %d, %b %Y') + "\" }]}"
         
     print(requests.post(url, payload, headers={'Content-type': 'application/json'}).content)
