@@ -40,10 +40,11 @@ class Satellite:
 
 # Recording class
 class Recording:
-    def __init__(self, satellite, filename, date):
+    def __init__(self, satellite, filename, date, passobj):
         self.satellite = satellite
         self.filename = filename
         self.date = date
+        self.passobj = passobj
 
 # Update TLE
 def updateTLEs():

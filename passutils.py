@@ -17,7 +17,7 @@ def schedulePass(pass_to_add, satellite, custom_aos = 0, custom_los = 0):
         custom_los = pass_to_add.los
 
     # Schedule the task
-    core.scheduler.add_job(recordPass, 'date', [satellite, custom_los], run_date=custom_aos)
+    core.scheduler.add_job(recordPass, 'date', [satellite, custom_los, pass_to_add], run_date=custom_aos)
     print("Scheduled " + satellite.name + " pass at " + str(custom_aos))
 
 # Schedule passes and resolve conflicts
@@ -107,7 +107,7 @@ def recordAPT(satellite, end_time):
 
     # Give it some time to exit and queue the decoding
     time.sleep(10)
-    core.decoding_queue.append(Recording(satellite, filename, date))
+    return (filename, date)
 
 # LRPT Pass record function
 def recordLRPT(satellite, end_time):
@@ -133,21 +133,27 @@ def recordLRPT(satellite, end_time):
 
     # Give it some time to exit and queue the decoding
     time.sleep(10)
-    core.decoding_queue.append(Recording(satellite, filename, date))
+    return (filename, date)
 
 # Downlink mode redirection
-def recordPass(satellite, end_time):
+def recordPass(satellite, end_time, passobj):
     # Lock the radio to prevent any issues
     core.radio_lock.acquire()
 
+    filename = str()
+    date = 0
+
     # Record the pass!
     if satellite.downlink == "APT":
-        recordAPT(satellite, end_time)
+        filename, date = recordAPT(satellite, end_time)
     elif satellite.downlink == "LRPT":
-        recordLRPT(satellite, end_time)
+        filename, date = recordLRPT(satellite, end_time)
 
     # Release the radio
     core.radio_lock.release()
+
+    # Queue decoding
+    core.decoding_queue.append(Recording(satellite, filename, date, passobj))
 
 # Decode APT file
 def decodeAPT(filename, delete_processed_files):
@@ -203,7 +209,7 @@ def decodeLRPT(filename, delete_processed_files):
     return output_files
 
 # Redirect to the right decoder function
-def decodePass(filename, satellite, date):
+def decodePass(filename, satellite, date, passobj):
     output_files = list()
     if satellite.downlink == "APT":
         output_files = decodeAPT(filename, satellite.delete_processed_files)
@@ -214,7 +220,7 @@ def decodePass(filename, satellite, date):
 
     # Add on the RSS feed if enabled
     if config.rss_enabled:
-        rss.addRSSPass(satellite, filename.replace(config.output_dir + "/", ""), date)
+        rss.addRSSPass(satellite, filename.replace(config.output_dir + "/", ""), date, passobj)
 
     # Process post-processing hook if enabled
     if config.post_processing_hook_enabled:
@@ -235,6 +241,6 @@ def processDecodeQueue():
         time.sleep(1)
         if len(core.decoding_queue) > 0:
             decode = core.decoding_queue[0]
-            decodePass(decode.filename, decode.satellite, decode.date)
+            decodePass(decode.filename, decode.satellite, decode.date, decode.passobj)
             core.decoding_queue.remove(decode)
             

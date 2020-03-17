@@ -25,7 +25,7 @@ class HTTPHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=config.output_dir, **kwargs)
 
 # Function for adding passes
-def addRSSPass(satellite, filename, date):
+def addRSSPass(satellite, filename, date, passobj):
 
     # Generate item content, here being images
     image = ""
@@ -36,7 +36,7 @@ def addRSSPass(satellite, filename, date):
 
     # Add it to the feed
     rss.items.append(PyRSS2Gen.RSSItem(
-        title = satellite.name + " on " + date.strftime('%H:%-M %d, %b %Y'),
+        title = satellite.name + " on " + date.strftime('%H:%-M %d, %b %Y') + " (" + passobj.max_elevation_deg + "°)",
         link = "",
         description = image,
         guid = PyRSS2Gen.Guid(""),
