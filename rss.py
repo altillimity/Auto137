@@ -36,7 +36,7 @@ def addRSSPass(satellite, filename, date, passobj):
 
     # Add it to the feed
     rss.items.append(PyRSS2Gen.RSSItem(
-        title = satellite.name + " on " + date.strftime('%H:%-M %d, %b %Y') + " (" + passobj.max_elevation_deg + "°)",
+        title = satellite.name + " on " + date.strftime('%H:%-M %d, %b %Y') + " (" + str(passobj.max_elevation_deg) + "°)",
         link = "",
         description = image,
         guid = PyRSS2Gen.Guid(""),
